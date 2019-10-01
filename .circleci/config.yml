@@ -15,8 +15,8 @@ jobs:
     executor: aws-executor
     steps:
       - run: git config --global user.name "$CIRCLE_USERNAME"
-        - add_ssh_keys
-        - checkout
+      - add_ssh_keys
+      - checkout
       - setup_remote_docker:
           version: 18.03.1-ce
       - run:
@@ -41,18 +41,15 @@ workflows:
   version: 2.1
   build-test-deploy:
     jobs:
-      - build:
+      - build-and-test:
           filters:
             branches:
               only:
                 - master
-      - test-unit:
-          requires:
-            - build
       - deploy:
           name: deploy
           requires:
-            - test-unit
+            - build-and-test
           filters:
             branches:
               only:
