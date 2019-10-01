@@ -34,7 +34,10 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            commands="docker pull ${ECR_REPO}:${CIRCLE_BRANCH}; docker rm -f ${SERVICE_NAME} || true; docker run -d -p 80:8080 --name ${SERVICE_NAME} ${ECR_REPO}:${CIRCLE_BRANCH}"
+            commands="$(aws ecr get-login --no-include-email); \
+              docker pull ${ECR_REPO}:${CIRCLE_BRANCH}; \
+              docker rm -f ${SERVICE_NAME} || true; \
+              docker run -d -p 80:8080 --name ${SERVICE_NAME} ${ECR_REPO}:${CIRCLE_BRANCH}"
             ssh ubuntu@${EC2_IP} ${commands}
       
 workflows:
